@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head>
+
+    <meta charset="utf-8">
+
+    <title>Running a real factory on WebSockets | Presentation</title>
+
+    <meta name="author" content="Joakim Kemeny">
+    <meta name="viewport" content="width=1024">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <link rel="shortcut icon" href="img/icons/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" href="img/icons/iphone.png" sizes="57x57">
+    <link rel="apple-touch-icon-precomposed" href="img/icons/iphone_2x.png" sizes="114x114">
+    <link rel="apple-touch-icon-precomposed" href="img/icons/ipad.png" sizes="72x72">
+    <link rel="apple-touch-icon-precomposed" href="img/icons/ipad_2x.png" sizes="144x144">
+
+    <link rel="stylesheet" href="css/styles.css">
+
+</head>
+<body>
+    <div id="impress">
+
+        <!-- Hint step ------------------------------------------------------------------------- -->
+
+        <div id="hint" class="step hint invisible" data-x="0" data-y="0" data-scale="0.001">
+            <div>
+                <p><b>Hi there!</b></p>
+                <p>
+                    This presentation works best in Safari and Chrome, bad in Firefox and worst (if
+                    at all) in Opera and Internet Explorer.
+                </p>
+                <p>
+                    Use a <b>spacebar</b> or <b>arrow keys</b> to navigate, <b>f</b> for full screen
+                    and <b>p</b> to open speaker notes.
+                </p>
+                <p>So, why don't you press spacebar to get started. I hope you will like it.</p>
+                <p>/Joakim</p>
+            </div>
+        </div>
+
+        <!-- Intro -------------------------------------------------------------------------------->
+
+        <div id="intro-1" class="step" data-x="0" data-y="0">
+            <h2>Running a real factory on</h2>
+            <h1>WebSockets</h1>
+            <h3>Joakim Kemeny</h3>
+            <h4>@joakimkemeny</h4>
+            <img src="img/callista.png" class="logotype">
+            <img src="img/backhammar.png" class="factory">
+            <canvas id="intro-smoke" class="smoke" height="744" width="1000"></canvas>
+
+            <div class="notes">
+                <p>
+                    Hello and welcome to my presentation about running a real factory on WebSockets.
+                </p>
+                <p>
+                    There are a lot of presentations about HTML5 and the new web technologies. Many
+                    of them are focused on creating games, how to create semantically correct markup
+                    and how to add audio and video. Recently these talks have shifted focus and now
+                    many start to talk about cooler stuff like WebSockets. However most of these
+                    talks are quite theoretical and often come to the conclusion that the
+                    technologies are not ready to be used yet. I'm using these technologies today
+                    and I thought it would be fun to show you how they can be used to create
+                    something quite different.
+                </p>
+                <p>
+                    My name is Joakim Kemeny and I work as a consultant at Callista Enterprise here
+                    in Gothenburg. My native tongue is Java but for the last couple of years I've
+                    been specializing more and more on front end development so now it's mostly
+                    JavaScript, CSS and maybe some Objective-C, if I'm lucky. But as you will see in
+                    this presentation all of these languages are connected today so you will see
+                    both some Javacode as well as some JavaScript so I hope that doesn't scare you.
+                </p>
+                <p>
+                    This presentation is based on the project that I'm currently working on and I
+                    will tell you a little bit more about it as we go along but before we get too
+                    technical we need to answer the following question.
+                </p>
+                <p>
+                    What is a real factory?
+                </p>
+            </div>
+        </div>
+
+        <!-- What is a real factory --------------------------------------------------------------->
+
+        <div id="factory-1" class="step invisible" data-x="-320" data-y="120" data-scale="0.08">
+            <div class="center">
+                <h1>What is a real factory?</h1>
+            </div>
+
+            <div class="notes">
+                <p>
+                    Well, there are all kinds of factories. Behind me you can see the boiler of a
+                    paper mill. It's actually the silhouette of the paper mill in Bäckhammar where I
+                    grew up and where I earned my living during the summers. It doesn't quite make
+                    me an expert in factories but as least I know what a factory can smell like.
+                </p>
+                <p>
+                    So there are many different kinds of factories but one thing they all have in
+                    common is hardware.
+                </p>
+            </div>
+        </div>
+        <div id="factory-2" class="step invisible" data-x="-320" data-y="120" data-scale="0.08">
+            <div class="center">
+                <h1>What is a real factory?</h1>
+            </div>
+            <div class="box ballon ballon-up ballon1">Hardware</div>
+
+            <div class="notes">
+                <p>
+                    And hardware can be all kinds of things.
+                </p>
+            </div>
+        </div>
+        <div id="factory-3" class="step invisible" data-x="-320" data-y="120" data-scale="0.08">
+            <div class="center">
+                <h1>What is a real factory?</h1>
+            </div>
+            <div class="box ballon ballon-up ballon1">Hardware</div>
+            <div class="flash flash1">Silos</div>
+            <div class="flash flash2">Pipes</div>
+            <div class="flash flash3">Engines</div>
+            <div class="flash flash4">Mixers</div>
+            <div class="flash flash5">Tambours</div>
+            <div class="flash flash6">Boilers</div>
+            <div class="flash flash7">Conveyor Belts</div>
+            <div class="flash flash8">Cranes</div>
+            <div class="flash flash9">Winders</div>
+            <div class="flash flash10">PLCs</div>
+            <div class="flash flash11">Lathes</div>
+            <div class="flash flash12">Scales</div>
+            <div class="flash flash13">I/O Units</div>
+            <div class="flash flash14">Coffee Makers</div>
+
+            <div class="notes">
+                <p>
+                    Silos, Pipes, Mixers, Conveyor belts... Coffee Makers. All kind of different
+                    hardware. But when I will talk about a factory today I mostly care about these
+                    two.
+                </p>
+            </div>
+        </div>
+        <div id="factory-4" class="step invisible" data-x="-320" data-y="120" data-scale="0.08">
+            <div class="center">
+                <h1>What is a real factory?</h1>
+            </div>
+            <div class="box ballon ballon-up ballon1">Hardware</div>
+            <div class="flash flash10">PLCs</div>
+            <div class="flash flash13">I/O Units</div>
+
+            <div class="notes">
+                <p>
+                    ...the input/output units and the programmable logic controllers. This IS a
+                    factory to me.
+                </p>
+                <p>
+                    The I/O units lets me talk to the hardware in the factory, it lets me read the
+                    current value of a scale, it lets me send commands such as empty scale and this
+                    can be very helpful when you are trying to control a factory.
+                </p>
+                <p>
+                    The PLC is used to control I/O units and to create sequences that actually can
+                    be used to produce something useful instead of just filling and emptying scales
+                    at random all day.
+                </p>
+                <p>
+                    The other half of a factory is software.
+                </p>
+            </div>
+        </div>
+        <div id="factory-5" class="step invisible" data-x="-320" data-y="120" data-scale="0.08">
+            <div class="center">
+                <h1>What is a real factory?</h1>
+            </div>
+            <div class="box ballon ballon-up ballon1">Hardware</div>
+            <div class="box ballon ballon-down ballon2">Software</div>
+            <div class="flash flash10">PLCs</div>
+            <div class="flash flash13">I/O Units</div>
+
+            <div class="notes">
+                <p>
+                    This is what I and I guess most of you do all day long. We create software. And
+                    the software in case of a factory can be used to control the factory, to handle
+                    customers and orders, analyze samples of what the factory produces and a whole
+                    lot of other things.
+                </p>
+                <p>
+                    This is what I will talk about today. We obviously need to talk to the PLCs but
+                    how that can be done in a smart way is the subject for an other talk so I won't
+                    touch on that today.
+                </p>
+                <p>
+                    So let's see what I'm going to cover today.
+                </p>
+            </div>
+        </div>
+
+        <!-- Scope -------------------------------------------------------------------------------->
+
+        <div id="scope-1" class="step" data-x="2000" data-y="0">
+            <ul class="option-list">
+                <li>
+                    <span>1</span>Manage orders
+                    <span>List orders, Add order, Cancel order</span>
+                </li>
+            </ul>
+
+            <div class="notes">
+                <p>
+                    I'm going to cover three things. First I'm going to talk about managing orders.
+                    List, add and cancel for instance. I guess that this is not what you came for
+                    but it will lay the groundwork for the rest of the presentation and I actually
+                    think that you will find this part to be more interesting than you think.
+                </p>
+            </div>
+        </div>
+        <div id="scope-2" class="step invisible" data-x="2000" data-y="0">
+            <ul class="option-list">
+                <li>
+                    <span>1</span>Manage orders
+                    <span>List orders, Add order, Cancel order</span>
+                </li>
+                <li>
+                    <span>2</span>Produce stuff
+                    <span>Controlling the factory and monitor its state</span>
+                </li>
+            </ul>
+
+            <div class="notes">
+                <p>
+                    Next I will be talking about producing stuff. In my current project we are
+                    building software to run concrete factories but I have simplified it for this
+                    presentation to just let the factory produce undefined stuff.
+                </p>
+                <p>
+                    This is where it will start to look and feel like a factory and since this
+                    whole presentation will be based on demos you'll get to see both the code and
+                    the actual running result.
+                </p>
+            </div>
+        </div>
+        <div id="scope-3" class="step invisible" data-x="2000" data-y="0">
+            <ul class="option-list">
+                <li>
+                    <span>1</span>Manage orders
+                    <span>List orders, Add order, Cancel order</span>
+                </li>
+                <li>
+                    <span>2</span>Produce stuff
+                    <span>Controlling the factory and monitor its state</span>
+                </li>
+                <li>
+                    <span>3</span>Create a UI
+                    <span>Shouldn't be that hard</span>
+                </li>
+            </ul>
+
+            <div class="notes">
+                <p>
+                    And finally I will show you how you can create a UI to handle this. And it
+                    shouldn't be that hard, right?
+                </p>
+                <p>
+                    I will be creating the UI and producing stuff at the same time so they will not
+                    be as separated as they are in this slide. But it's just to give you an
+                    overview.
+                </p>
+                <p>
+                    I hope this sounds interesting because I've already taken up some of your time
+                    so let's get started for real.
+                </p>
+            </div>
+        </div>
+
+        <!-- Order architecture ------------------------------------------------------------------->
+
+        <div id="architecture-1" class="step" data-x="3500" data-y="0">
+            <div class="box uml-box box1">
+                Client
+            </div>
+            <div class="uml-connections"></div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+
+            <div class="notes">
+                <p>
+                    Let's start with managing orders. This is of course the kind of systems that I
+                    think that a lot of you have built to some degree in some variation.
+                </p>
+                <p>
+                    It usually involves a client and a server and the order system in the factory
+                    I'm building today is no different.
+                </p>
+                <p>
+                    The client can send requests to the server and get a response.
+                </p>
+            </div>
+        </div>
+        <div id="architecture-2" class="step invisible" data-x="3500" data-y="0">
+            <div class="box uml-box box1">
+                Client
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">listOrders</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+
+            <div class="notes">
+                <p>
+                    So the client can ask for a list of orders,
+                </p>
+            </div>
+        </div>
+        <div id="architecture-3" class="step invisible" data-x="3500" data-y="0">
+            <div class="box uml-box box1">
+                Client
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">listOrders</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">createOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+
+            <div class="notes">
+                <p>
+                    create a new order,
+                </p>
+            </div>
+        </div>
+        <div id="architecture-4" class="step invisible" data-x="3500" data-y="0">
+            <div class="box uml-box box1">
+                Client
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">listOrders</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">createOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">updateOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+
+            <div class="notes">
+                <p>
+                    update an order
+                </p>
+            </div>
+        </div>
+        <div id="architecture-5" class="step invisible" data-x="3500" data-y="0">
+            <div class="box uml-box box1">
+                Client
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">listOrders</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">createOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">updateOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">deleteOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+
+            <div class="notes">
+                <p>
+                    and even delete an order.
+                </p>
+                <p>
+                    There is nothing special about this at all and it can be solved using a normal
+                    REST API as I guess that many of you are familiar with. It doesn't matter what
+                    kind of technology you use on the server side here, choose the one you are
+                    comfortable with. But in the demos I will use Spring MVC because that's what we
+                    are using in our solution.
+                </p>
+            </div>
+        </div>
+
+        <!-- Rest API ----------------------------------------------------------------------------->
+
+        <div id="rest-1" class="step" data-x="5190" data-y="0">
+            <h1 class="small">Spring MVC</h1>
+            <pre><code data-language="java" data-src="src/rest-1.java"></code></pre>
+
+            <div class="notes">
+                <p>
+                    So we have a normal Spring MVC controllers. It produces JSON and not HTML and
+                    this is very important because we have not discussed how to create the UI yet.
+                    Maybe it's only web, maybe we will create a native iOS or Android client.
+                    Maybe the web isn't at all suited to run a factory so we need to create a normal
+                    windows application? The server should not care about that.
+                </p>
+                <p>
+                    We can list orders with a GET request to /api/order
+                </p>
+                <p>
+                    We can create orders with a POST request /api/order
+                </p>
+            </div>
+        </div>
+        <div id="rest-2" class="step" data-x="5190" data-y="600">
+            <pre><code data-language="java" data-src="src/rest-2.java"></code></pre>
+
+            <div class="notes">
+                <p>
+                    We can update orders with a PUT request /api/order/{id}
+                </p>
+                <p>
+                    We can delete orders with a DELETE request to /api/order/{id}
+                </p>
+                <p>
+                    So that is our server API and it is pretty strait forward. Let's take a first
+                    look at our demo application to see how this API can be used.
+                </p>
+            </div>
+        </div>
+
+        <!-- Demo --------------------------------------------------------------------------------->
+
+        <div id="demo-1" class="step" data-x="6690" data-y="0">
+            <div class="browser" data-src="demo/demo1.html"></div>
+
+            <div class="notes">
+                <p>
+                    So this is the demo application that we are playing with today. The application
+                    is going to be handling orders and it will also be able to run these orders
+                    through the factory and follow the order on it's way and also control the
+                    factory to some extent.
+                </p>
+                <p>
+                    So you can see the list of orders here. The orders have a target customer, a
+                    quantity and a status that will be used later.
+                </p>
+                <p>
+                    We can add a new order here, edit the order and finally also delete an order.
+                </p>
+                <p>
+                    So this is the application that we are going to build on today. There are some
+                    other buttons here that I will demonstrate later but let's go back.
+                </p>
+            </div>
+        </div>
+
+        <!-- Order architecture ------------------------------------------------------------------->
+
+        <div id="architecture-6" class="step invisible" data-x="3500" data-y="0">
+            <div class="box uml-box box1">
+                Client
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">listOrders</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">createOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">updateOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">deleteOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+
+            <div class="notes">
+                <p>
+                    This was a normal client server solution but what happens when you add an other
+                    client to this picture?
+                </p>
+            </div>
+        </div>
+        <div id="architecture-7" class="step invisible" data-x="3690" data-y="0">
+            <div class="box uml-box box1">
+                Client
+                <span>(admin)</span>
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">listOrders</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">createOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">updateOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">deleteOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+            <div class="uml-connections"></div>
+            <div class="box uml-box box3">
+                Client
+                <span>(operator)</span>
+            </div>
+
+            <div class="notes">
+                <p>
+                    Let's say that the first client is an administrator who enters orders all day
+                    long and the second client is an operator who is in charge taking the order and
+                    making sure they get produced.
+                </p>
+                <p>
+                    Let's start over.
+                </p>
+            </div>
+        </div>
+        <div id="architecture-8" class="step invisible" data-x="3690" data-y="0">
+            <div class="box uml-box box1">
+                Client
+                <span>(admin)</span>
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">listOrders</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-left">listOrders</div>
+                <div class="uml-line uml-arrow-right uml-line-dotted"></div>
+            </div>
+            <div class="box uml-box box3">
+                Client
+                <span>(operator)</span>
+            </div>
+
+            <div class="notes">
+                <p>
+                    First of all, both can list orders. Nothing special there.
+                </p>
+            </div>
+        </div>
+        <div id="architecture-9" class="step invisible" data-x="3690" data-y="0">
+            <div class="box uml-box box1">
+                Client
+                <span>(admin)</span>
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">listOrders</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">createOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-left">listOrders</div>
+                <div class="uml-line uml-arrow-right uml-line-dotted"></div>
+            </div>
+            <div class="box uml-box box3">
+                Client
+                <span>(operator)</span>
+            </div>
+
+            <div class="notes">
+                <p>
+                    But what happens when the administrator creates a new order?
+                </p>
+                <p>
+                    The operator will probably want to know. Wouldn't it be great if the server
+                    could tell the operator that a new order was created?
+                </p>
+            </div>
+        </div>
+        <div id="architecture-10" class="step invisible" data-x="3690" data-y="0">
+            <div class="box uml-box box1">
+                Client
+                <span>(admin)</span>
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">listOrders</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">createOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-left">listOrders</div>
+                <div class="uml-line uml-arrow-right uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right line1">orderCreated</div>
+            </div>
+            <div class="box uml-box box3">
+                Client
+                <span>(operator)</span>
+            </div>
+
+            <div class="notes">
+                <p>
+                    The same goes for the other commands as well.
+                </p>
+            </div>
+        </div>
+        <div id="architecture-11" class="step invisible" data-x="3690" data-y="0">
+            <div class="box uml-box box1">
+                Client
+                <span>(admin)</span>
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">listOrders</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">createOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">updateOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-left">listOrders</div>
+                <div class="uml-line uml-arrow-right uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right line1">orderCreated</div>
+                <div class="uml-line uml-arrow-right line2">orderUpdated</div>
+            </div>
+            <div class="box uml-box box3">
+                Client
+                <span>(operator)</span>
+            </div>
+        </div>
+        <div id="architecture-12" class="step invisible" data-x="3690" data-y="0">
+            <div class="box uml-box box1">
+                Client
+                <span>(admin)</span>
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">listOrders</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">createOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">updateOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">deleteOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-left">listOrders</div>
+                <div class="uml-line uml-arrow-right uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right line1">orderCreated</div>
+                <div class="uml-line uml-arrow-right line2">orderUpdated</div>
+                <div class="uml-line uml-arrow-right line3">orderDeleted</div>
+            </div>
+            <div class="box uml-box box3">
+                Client
+                <span>(operator)</span>
+            </div>
+
+            <div class="notes">
+                <p>
+                    And of course it should go both ways.
+                </p>
+            </div>
+        </div>
+        <div id="architecture-13" class="step invisible" data-x="3690" data-y="0">
+            <div class="box uml-box box1">
+                Client
+                <span>(admin)</span>
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">listOrders</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">createOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">updateOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">deleteOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-left line4">orderCreated</div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-left">listOrders</div>
+                <div class="uml-line uml-arrow-right uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right line1">orderCreated</div>
+                <div class="uml-line uml-arrow-right line2">orderUpdated</div>
+                <div class="uml-line uml-arrow-right line3">orderDeleted</div>
+                <div class="uml-line uml-arrow-left">createOrder</div>
+                <div class="uml-line uml-arrow-right uml-line-dotted"></div>
+            </div>
+            <div class="box uml-box box3">
+                Client
+                <span>(operator)</span>
+            </div>
+
+            <div class="notes">
+                <p>
+                    That leads us to the seconds question for today...
+                </p>
+                <p>
+                    What is WebSockets?
+                </p>
+            </div>
+        </div>
+
+        <!-- WebSockets --------------------------------------------------------------------------->
+
+        <div id="websockets-1" class="step" data-x="5190" data-y="-1000">
+            <div class="center">
+                <h1>What is WebSockets?</h1>
+            </div>
+
+            <div class="notes">
+                <p>
+                    WebSockets is a way to solve this problem since WebSockets can be used to send
+                    commands in both directions. So the server can send information to the client
+                    even if the client haven't asked for it.
+                </p>
+            </div>
+        </div>
+        <div id="websockets-2" class="step invisible" data-x="5190" data-y="-1000">
+            <div class="center">
+                <h1>What is WebSockets?</h1>
+                <div class="box ballon ballon-down ballon1">HTML5</div>
+                <div class="box ballon ballon-up ballon2">Firewall friendly</div>
+            </div>
+
+            <div class="notes">
+                <p>
+                    And WebSockets is part of all the new cool technologies that is part of HTML5.
+                    This means that it's available in most modern browsers. To only exception is
+                    the default Android browser but you can use Chrome or Firefox instead. The
+                    protocol have been stable since april so implementers are starting to catch up.
+                </p>
+                <p>
+                    So this means no plugins, so no Flash and no Java.
+                </p>
+                <p>
+                    It's also very firewall friendly since a socket connection is initiated over a
+                    normal http request which is upgraded to a WebSocket.
+                </p>
+                <p>
+                    But the main reason why this is so great for running a factory is...
+                </p>
+            </div>
+        </div>
+        <div id="websockets-3" class="step invisible" data-x="5190" data-y="-1000">
+            <div class="center">
+                <h1>What is WebSockets?</h1>
+                <div class="box ballon ballon-down ballon1">Full duplex</div>
+                <div class="box ballon ballon-up ballon2">2 bytes overhead</div>
+            </div>
+
+            <div class="notes">
+                <p>
+                    ...that it's bidirectional and uses full duplex so we can send messages in both
+                    directions at the same time. This is of course necessary to be reliable in this
+                    kind of environment.
+                </p>
+                <p>
+                    And the second thing is that it adds minimal overhead. Just a start and a stop
+                    byte for each message and if you compare this to the normal HTTP headers that
+                    adds around 1000 bytes it's a huge deal.
+                </p>
+                <p>
+                    Let's look at how this can be implemented.
+                </p>
+            </div>
+        </div>
+
+        <!-- WebSockets Code ---------------------------------------------------------------------->
+
+        <div id="ws-code-1" class="step" data-x="6690" data-y="-1000">
+            <h1 class="small">WebSocketServlet (Jetty)</h1>
+            <pre><code data-language="java" data-src="src/websocket-1.java"></code></pre>
+            <div class="notes">
+                <p>
+                    There is no official standard for Java yet. They are working on it through
+                    JSR-356 but so far we are left in the hands of the different application
+                    server vendors. Both Glassfish and Tomcat have there own implementation but we
+                    use Jetty for our solution.
+                </p>
+                <p>
+                    The Jetty implementation is based on the Servlet API but instead of doing a
+                    doGet we do a doWebSocketConnect when the client requests a WebSocket
+                    connection. The only thing we need to do in the servlet is to return a WebSocket
+                    to the client. We can return different WebSockets depending on the protocol but
+                    in our case we always return the same type and we pass it a reference to a
+                    WebSocketManager which is a utility class that we have created.
+                </p>
+                <p>
+                    So what does this WebSocketClient look like.
+                </p>
+            </div>
+        </div>
+        <div id="ws-code-2" class="step" data-x="8190" data-y="-1000">
+            <h1 class="small">WebSocketClient (Jetty)</h1>
+            <pre><code data-language="java" data-src="src/websocket-2.java"></code></pre>
+
+            <div class="notes">
+                <p>
+                    First of all it implements a OnTextMessage interface. WebSockets can be both
+                    binary and text based and we use text.
+                </p>
+                <p>
+                    The interface only have 3 methods. First onConnect where we store the actual
+                    connection to the client and then we add the client to a list of active clients.
+                    You will see why we need that later but let's just say that it's pretty useful
+                    to keep a list of all connected clients.
+                </p>
+            </div>
+        </div>
+        <div id="ws-code-3" class="step" data-x="8190" data-y="-430">
+            <pre><code data-language="java" data-src="src/websocket-3.java"></code></pre>
+
+            <div class="notes">
+                <p>
+                    Next we have onClose where we just deregister the client.
+                </p>
+                <p>
+                    The final method in the interface is onMessage and this method gets called when
+                    the client sends a message to the server over the WebSocket. In our case we
+                    delegate the parsing and handling of that message to our utility manager.
+                </p>
+                <p>
+                    Finally we've also added a sendMessage method here which just sends a message
+                    over the connection that we stored earlier. This is the method that we use to
+                    send messages from the server to the client.
+                </p>
+                <p>
+                    So this message, what does that look like? That's up to you but we've created
+                    a simple JSON protocol that we use and it looks like this.
+                </p>
+            </div>
+        </div>
+        <div id="ws-code-4" class="step" data-x="9690" data-y="-1000">
+            <h1 class="small">Protocol</h1>
+            <pre><code data-language="javascript" data-src="src/protocol-1.js"></code></pre>
+
+            <div class="notes">
+                <p>
+                    So here we have the message for our orderCreated event.
+                </p>
+                <p>
+                    We have specified a sub protocol that we use to be able to send different kind
+                    of messages over the same WebSocket and in the command we have specified the
+                    type of the event.
+                </p>
+                <p>
+                    Finally we have the actual data of the event and here we have the details for
+                    the created order.
+                </p>
+                <p>
+                    Let's see how we can use this in our controller.
+                </p>
+            </div>
+        </div>
+        <div id="ws-code-5" class="step" data-x="9690" data-y="465">
+            <pre><code data-language="java" data-src="src/controller-2.java"></code></pre>
+            <p class="links">
+                Get the code at <a href="http://github.com/joakimkemeny">github.com/joakimkemeny</a>
+            </p>
+
+            <div class="notes">
+                <p>
+                    Let's first inject the WebSocket utility manager that we used earlier and
+                    remember that we registered all of our clients through this manager and that
+                    means that in our createOrder method we can call a broadcast method on the
+                    manager to send a message to all connected clients.
+                </p>
+                <p>
+                    Maybe you wonder how this manager is implemented but this presentation contains
+                    a lot of code and it's not done yet so I'm not going to show it to you. Instead
+                    I encourage you to checkout the code at my Github page after this presentation.
+                    I have to warn you that this is demo code so be aware of that.
+                </p>
+                <p>
+                    So now we have a way to communicate from the server to the clients but I said
+                    that WebSockets is bidirectional so how do we implement that?
+                </p>
+                <p>
+                    Well we already have an API to communicate from the client to the server and
+                    that is the REST API so what we did was that we reused that.
+                </p>
+            </div>
+        </div>
+        <div id="ws-code-6" class="step" data-x="9690" data-y="0">
+            <h1 class="small">WebSockets (Spring MVC)</h1>
+            <pre><code data-language="java" data-src="src/controller-1.java"></code></pre>
+
+            <div class="notes">
+                <p>
+                    So back to the top of the controller again and what we want to do is to be
+                    able to call all methods over the WebSocket connection as well and since we use
+                    annotations for everything else we created a couple of annotations for that as
+                    well.
+                </p>
+                <p>
+                    So we annotate the Spring controller to make it respond the order protocol and
+                    then we also annotate the method to make it handle the list command.
+                </p>
+                <p>
+                    Behind the scenes we use some reflection magic but I'm not showing it to you but
+                    the same as before, the code is available so check it out. I just wanted you to
+                    know that it's possible to combine REST with WebSockets in a nice way.
+                </p>
+            </div>
+        </div>
+
+        <!-- Demo --------------------------------------------------------------------------------->
+
+        <div id="demo-2" class="step" data-x="9690" data-y="1570">
+            <div class="browser" data-src="demo/demo1.html"></div>
+
+            <div class="notes">
+                <p>
+                    So here we have the demo again. Let's bring up a different browser and to make
+                    this a little bit more interesting. I'll use my phone to prove that I'm not
+                    cheating.
+                </p>
+                <p>
+                    Demo with the iPhone...
+                </p>
+                <p>
+                    So now we have created the server part for this application using REST,
+                    WebSockets and Spring MVC. Next we need to create a UI to handle this and since
+                    the client for this application is going to be a web application it will be
+                    written in JavaScript but that is not an excuse for writing bad code so we need
+                    a good way to structure our code.
+                </p>
+                <p>
+                    For this...
+                </p>
+            </div>
+        </div>
+
+        <!-- Backbone.js -------------------------------------------------------------------------->
+
+        <div id="backbone-1" class="step invisible" data-x="8190" data-y="1570">
+            <div class="center">
+                <h1>Backbone.js</h1>
+            </div>
+
+            <div class="notes">
+                <p>
+                    ...we've chosen to use a framework called Backbone.js.
+                </p>
+            </div>
+        </div>
+        <div id="backbone-2" class="step invisible" data-x="8190" data-y="1570">
+            <div class="center">
+                <h1>Backbone.js</h1>
+                <div class="box ballon ballon-down ballon1">MV* library</div>
+            </div>
+
+            <div class="notes">
+                <p>
+                    Backbone.js is one of these new cool MVC-like libraries that have popped up
+                    in the last couple of year. They don't follow the model view controller pattern
+                    precisely instead they use some kind of variation and are normally called MV*
+                    libraries or frameworks.
+                </p>
+                <p>
+                    There are a lot of alternatives out there today. Ember, Angular, Knockout and
+                    Spine are some of the frameworks that you could checkout. So which one do you
+                    choose? Well it's the same as in the Java world, it depends. We choose Backbone
+                    since it seemed like the best choice at the time. Today I would seriously
+                    consider Ember but I leave that to you. I know that Backbone works so I will
+                    show you that today.
+                </p>
+                <p>
+                    So what is Backbone?
+                </p>
+            </div>
+        </div>
+        <div id="backbone-3" class="step invisible" data-x="8190" data-y="1570">
+            <div class="center">
+                <h1>Backbone.js</h1>
+                <div class="box ballon ballon-up ballon1">Models / Collections</div>
+            </div>
+
+            <div class="notes">
+                <p>
+                    Backbone have three parts that work together. First we have the models and
+                    collection of models. This is where you hold the data on the client side.
+                    Orders and customers are some examples of models.
+                </p>
+                <p>
+                    These models and collections trigger events when they are changed. So we
+                    know when there is a new order, when an order is changed or when an order is
+                    deleted.
+                </p>
+            </div>
+        </div>
+        <div id="backbone-4" class="step invisible" data-x="8190" data-y="1570">
+            <div class="center">
+                <h1>Backbone.js</h1>
+                <div class="box ballon ballon-up ballon1">Models / Collections</div>
+                <div class="box ballon ballon-down ballon2">Views</div>
+            </div>
+            <div class="notes">
+                <p>
+                    Next we have views. Views are responsible for showing the models and other
+                    information on the screen.
+                </p>
+                <p>
+                    And since the models trigger events the views can listen to these events and
+                    react to them in some way.
+                </p>
+            </div>
+        </div>
+        <div id="backbone-5" class="step invisible" data-x="8190" data-y="1570">
+            <div class="center">
+                <h1>Backbone.js</h1>
+                <div class="box ballon ballon-up ballon1">Models / Collections</div>
+                <div class="box ballon ballon-down ballon2">Views</div>
+                <div class="box ballon ballon-down ballon3">Routers</div>
+            </div>
+            <p class="links">
+                Read more about Backbone at <a href="http://backbonejs.org">backbonejs.org</a>
+            </p>
+
+            <div class="notes">
+                <p>
+                    Finally we have routers which are kind of the controllers in the MVC-model. The
+                    routers are used to map URL to a state in the application by getting the correct
+                    models and showing them in the correct views.
+                </p>
+                <p>
+                    This is a very brief introduction to Backbone and if you want more information
+                    you'll have to check it out your self at backbonejs.org.
+                </p>
+                <p>
+                    So let's start using Backbone by seeing how it can consume our REST API. For
+                    this we use the models and collections.
+                </p>
+            </div>
+        </div>
+        <div id="backbone-6" class="step" data-x="6690" data-y="1570">
+            <h1 class="small">Backbone Models / Collections</h1>
+            <pre><code data-language="javascript" data-src="src/backbone-1.js"></code></pre>
+
+            <div class="notes">
+                <p>
+                    Here you can see the order model. The only thing we have to do is to specify the
+                    endpoint for our REST API to let the model and collection know where to get and
+                    store the data.
+                </p>
+                <p>
+                    In this example I've also added some default values for new models.
+                </p>
+                <p>
+                    When our models and collections are created, we can use them call our API.
+                </p>
+            </div>
+        </div>
+        <div id="backbone-7" class="step" data-x="6690" data-y="2010">
+            <pre><code data-language="javascript" data-src="src/backbone-2.js"></code></pre>
+
+            <div class="notes">
+                <p>
+                    Let's start with listOrders. The only thing we have to do is to create a new
+                    order collection and simply call fetch to get all orders.
+                </p>
+            </div>
+        </div>
+        <div id="backbone-8" class="step" data-x="6690" data-y="2120">
+            <pre><code data-language="javascript" data-src="src/backbone-3.js"></code></pre>
+
+            <div class="notes">
+                <p>
+                    Next we can create a new order model, pass it some values and simply call save
+                    to POST it to the server.
+                </p>
+            </div>
+        </div>
+        <div id="backbone-9" class="step" data-x="6690" data-y="2335">
+            <pre><code data-language="javascript" data-src="src/backbone-4.js"></code></pre>
+
+            <div class="notes">
+                <p>
+                    We can change a value and save it again to PUT the update on the server.
+                </p>
+            </div>
+        </div>
+        <div id="backbone-10" class="step" data-x="6690" data-y="2445">
+            <pre><code data-language="javascript" data-src="src/backbone-5.js"></code></pre>
+
+            <div class="notes">
+                <p>
+                    Finally we can delete the order by calling destroy.
+                </p>
+                <p>
+                    That's how easy it is to consume our REST API from Backbone. The next step is
+                    to add WebSockets to the client as well.
+                </p>
+            </div>
+        </div>
+
+        <div id="ws-code-7" class="step" data-x="5190" data-y="2000">
+            <h1 class="small">WebSockets (JavaScript)</h1>
+            <pre><code data-language="javascript" data-src="src/websocket-1.js"></code></pre>
+
+            <div class="notes">
+                <p>
+                    So first a look at the JavaScript API for working with WebSockets.
+                </p>
+                <p>
+                    As you can see, the interface is almost identical to the Jetty implementation on
+                    the Java side. We have onopen, onclose, onmessage and a send function.
+                </p>
+                <p>
+                    But in the same way and for the same reasons that we abstracted away the
+                    WebSocket stuff in Spring MVC we can make this easier to use for Backbone as
+                    well. For Spring MVC we used annotations but for Backbone we implement one
+                    WebSocket handler and let it communicate with the Backbone models using events.
+                </p>
+                <p>
+                    Let's see how that can look.
+                </p>
+            </div>
+        </div>
+
+        <div id="backbone-11" class="step" data-x="3690" data-y="2000">
+            <h1 class="small">WebSockets (Backbone)</h1>
+            <pre><code data-language="javascript" data-src="src/backbone-6.js"></code></pre>
+
+            <div class="notes">
+                <p>
+                    So here we have the order collection again.
+                </p>
+            </div>
+        </div>
+        <div id="backbone-12" class="step" data-x="3690" data-y="2220">
+            <pre><code data-language="javascript" data-src="src/backbone-7.js"></code></pre>
+
+            <div class="notes">
+                <p>
+                    All Backbone object have an initializer and we can use this to add event
+                    listeners. So here we can listen to events on the WebSocket handler and when
+                    an event with the protocol order and the command created is triggered we can use
+                    the data to update the model in the collection.
+                </p>
+                <p>
+                    Again, there is more code here that you don't see so but its just to give you an
+                    idea of what you can do and you can find the code at Github as I said earlier.
+                </p>
+            </div>
+        </div>
+
+        <!-- Demo --------------------------------------------------------------------------------->
+
+        <div id="demo-3" class="step" data-x="3690" data-y="1000">
+            <div class="browser" data-src="demo/demo2.html"></div>
+
+            <div class="notes">
+                <p>
+                    Ok. Back to our demo application again. Now it's time to see what the factory
+                    looks like for real.
+                </p>
+                <p>
+                    So here we have the factory. Remember that we are producing undefined stuff and
+                    to do that we take some amount of the different materials A1-A3 and B1-B4 and
+                    mix it together.
+                </p>
+                <p>
+                    So in this factory we have silos with the different materials. These materials
+                    are measured on two scales and when the correct amount have been measured the
+                    scales are emptied into some kind of mixer that we don't show in the demo.
+                </p>
+                <p>
+                    If we click on the scales they are activated. Let's run an order through the
+                    factory to see how it works.
+                </p>
+                <p>
+                    So how does this work? Back to the overview again.
+                </p>
+            </div>
+        </div>
+
+        <!-- Architecture ------------------------------------------------------------------------->
+
+        <div id="architecture-14" class="step invisible" data-x="3690" data-y="0">
+            <div class="box uml-box box1">
+                Client
+                <span>(admin)</span>
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">listOrders</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">createOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">updateOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right">deleteOrder</div>
+                <div class="uml-line uml-arrow-left uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-left line4">orderCreated</div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-left">listOrders</div>
+                <div class="uml-line uml-arrow-right uml-line-dotted"></div>
+                <div class="uml-line uml-arrow-right line1">orderCreated</div>
+                <div class="uml-line uml-arrow-right line2">orderUpdated</div>
+                <div class="uml-line uml-arrow-right line3">orderDeleted</div>
+                <div class="uml-line uml-arrow-left">createOrder</div>
+                <div class="uml-line uml-arrow-right uml-line-dotted"></div>
+            </div>
+            <div class="box uml-box box3">
+                Client
+                <span>(operator)</span>
+            </div>
+
+            <div class="notes">
+                <p>
+                    Let's add the PLC to this picture.
+                </p>
+            </div>
+        </div>
+        <div id="architecture-15" class="step invisible" data-x="3690" data-y="100">
+            <div class="box uml-box box1">
+                Client
+            </div>
+            <div class="uml-connections">
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+            <div class="uml-connections">
+            </div>
+            <div class="box uml-box box3">
+                Client
+            </div>
+            <div class="uml-vertical-connections connections1">
+                <div class="uml-vertical-line uml-arrow-up"></div>
+                <div class="uml-vertical-line uml-arrow-up"></div>
+                <div class="uml-vertical-line uml-arrow-down"></div>
+                <div class="uml-vertical-line uml-arrow-up"></div>
+            </div>
+            <div class="box uml-box box4">
+                PLC
+            </div>
+
+            <div class="notes">
+                <p>
+                    The PLC communicates with the server in some way. It's actually over modbus TCP
+                    if anybody is interested. The server can read values from the PLC in some way
+                    and also set values in the PLC.
+                </p>
+            </div>
+        </div>
+        <div id="architecture-16" class="step invisible" data-x="3690" data-y="100">
+            <div class="box uml-box box1">
+                Client
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-left">siloUpdated</div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">siloUpdated</div>
+            </div>
+            <div class="box uml-box box3">
+                Client
+            </div>
+            <div class="uml-vertical-connections connections1">
+                <div class="uml-vertical-line uml-arrow-up"></div>
+            </div>
+            <div class="box uml-box box4">
+                PLC
+            </div>
+
+            <div class="notes">
+                <p>
+                    So now the server can push WebSocket messages to the clients to let them know
+                    that the silos have been updated. Maybe their material level changed or
+                    something like that.
+                </p>
+            </div>
+        </div>
+        <div id="architecture-17" class="step invisible" data-x="3690" data-y="100">
+            <div class="box uml-box box1">
+                Client
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-left">siloUpdated</div>
+                <div class="uml-line uml-arrow-left">scaleUpdated</div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">siloUpdated</div>
+                <div class="uml-line uml-arrow-right">scaleUpdated</div>
+            </div>
+            <div class="box uml-box box3">
+                Client
+            </div>
+            <div class="uml-vertical-connections connections1">
+                <div class="uml-vertical-line uml-arrow-up"></div>
+                <div class="uml-vertical-line uml-arrow-up"></div>
+            </div>
+            <div class="box uml-box box4">
+                PLC
+            </div>
+
+            <div class="notes">
+                <p>Maybe the scale changed.</p>
+            </div>
+        </div>
+        <div id="architecture-18" class="step invisible" data-x="3690" data-y="100">
+            <div class="box uml-box box1">
+                Client
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-left">siloUpdated</div>
+                <div class="uml-line uml-arrow-left">scaleUpdated</div>
+            </div>
+            <div class="box uml-box box2">
+                Server
+            </div>
+            <div class="uml-connections">
+                <div class="uml-line uml-arrow-right">siloUpdated</div>
+                <div class="uml-line uml-arrow-right">scaleUpdated</div>
+                <div class="uml-line uml-arrow-left">activateScale</div>
+            </div>
+            <div class="box uml-box box3">
+                Client
+            </div>
+            <div class="uml-vertical-connections connections1">
+                <div class="uml-vertical-line uml-arrow-up"></div>
+                <div class="uml-vertical-line uml-arrow-up"></div>
+                <div class="uml-vertical-line uml-arrow-down"></div>
+            </div>
+            <div class="box uml-box box4">
+                PLC
+            </div>
+
+            <div class="notes">
+                <p>
+                    The clients can also send commands to the server that gets forwarded to the PLC
+                    to maybe activate the scale as I did in the demo.
+                </p>
+                <p>
+                    So now we have models that are in sync but as the application continues to grow
+                    the UI to show the models may get out of hand so the final piece for this puzzle
+                    is to create some kind of way to automate UI changes as well and for that we
+                    use Knockout.
+                </p>
+            </div>
+        </div>
+
+        <!-- Knockout.js -------------------------------------------------------------------------->
+
+        <div id="knockout-1" class="step invisible" data-x="2000" data-y="1000">
+            <div class="center">
+                <h1>Knockout.js</h1>
+            </div>
+
+            <div class="notes">
+                <p>
+                    I mentioned Knockout earlier but I didn't choose to use it as the base for our
+                    application since it's not really good for that but for managing the UI it's
+                    great. Knockout does its magic though two features.
+                </p>
+            </div>
+        </div>
+        <div id="knockout-2" class="step invisible" data-x="2000" data-y="1000">
+            <div class="center">
+                <h1>Knockout.js</h1>
+                <div class="box ballon ballon-down ballon1">Declarative Bindings</div>
+            </div>
+
+            <div class="notes">
+                <p>
+                    It does declarative bindings...
+                </p>
+            </div>
+        </div>
+        <div id="knockout-3" class="step invisible" data-x="2000" data-y="1000">
+            <div class="center">
+                <h1>Knockout.js</h1>
+                <div class="box ballon ballon-down ballon1">Declarative Bindings</div>
+                <div class="box ballon ballon-up ballon2">Automatic UI Refresh</div>
+            </div>
+            <p class="links">
+                Read more about Knockout at <a href="http://knockoutjs.com">knockoutjs.com</a>
+            </p>
+
+            <div class="notes">
+                <p>
+                    ...and it does automatic UI refreshes. So we can tell the UI how it should be
+                    connected to the models and then we don't need to care any more, it will stay
+                    updated.
+                </p>
+                <p>
+                    You can read more about it at knockoutjs.com.
+                </p>
+                <p>
+                    So now we have both Backbone and Knockout how can that work?
+                </p>
+            </div>
+        </div>
+        <div id="knockout-4" class="step invisible" data-x="2000" data-y="1000">
+            <div class="center">
+                <h1>Knockout.js</h1>
+                <div class="box ballon ballon-down ballon1">Can work with Backbone…</div>
+            </div>
+
+            <div class="notes">
+                <p>
+                    Obviously it can work but we need some kind of glue to make them work together.
+                </p>
+            </div>
+        </div>
+        <div id="knockout-5" class="step invisible" data-x="2000" data-y="1000">
+            <div class="center">
+                <h1>Knockout.js</h1>
+                <div class="box ballon ballon-down ballon1">Can work with Backbone…</div>
+                <div class="box ballon ballon-up ballon2">…using Knockback</div>
+            </div>
+            <p class="links">
+                Read more about Knockback at
+                <a href="http://kmalakoff.github.com/knockback">kmalakoff.github.com/knockback</a>
+            </p>
+
+            <div class="notes">
+                <p>
+                    The glue that we use is called Knockback. I just thought I let you know since
+                    it complicates the code quite a bit but as usual when it gets complicated I
+                    leave it as an exercise to you.
+                </p>
+            </div>
+        </div>
+        <div id="knockout-6" class="step" data-x="2000" data-y="2000">
+            <h1 class="small">Knockout HTML</h1>
+            <pre><code data-language="html" data-src="src/knockout-1.js"></code></pre>
+
+            <div class="notes">
+                <p>
+                    So here is some of the code for showing the order list. We can iterate over all
+                    orders in a table, bind the value of the properties of the order and even change
+                    the css based on the status of the order.
+                </p>
+                <p>
+                    We also use it to do event handling. This can be done in both Backbone and
+                    Knockout but we choose to go with Knockout.
+                </p>
+            </div>
+
+        </div>
+        <div id="knockout-7" class="step" data-x="2000" data-y="3000">
+            <h1 class="small">Knockout HTML</h1>
+            <pre><code data-language="html" data-src="src/knockout-2.js"></code></pre>
+
+            <div class="notes">
+                <p>
+                    Here is an other example and this is from the factory part. We show or hide the
+                    factory, and we do that animated, when we click on the button as you saw
+                    earlier. We also change the width of the scale progress bar based on the
+                    progress.
+                </p>
+            </div>
+        </div>
+
+        <!-- Demo --------------------------------------------------------------------------------->
+
+        <div id="demo-4" class="step" data-x="3500" data-y="3000">
+            <div class="browser" data-src="demo/demo2.html"></div>
+
+            <div class="notes">
+                <p>
+                    Now it's time for my last demo and now I will try again with my phone to let you
+                    see how it works.
+                </p>
+            </div>
+        </div>
+
+        <!-- Conclusion --------------------------------------------------------------------------->
+
+        <div id="conclusion-1" class="step" data-x="5000" data-y="3000">
+            <div class="center">
+                <h1>Conclusions</h1>
+            </div>
+
+            <div class="notes">
+                <p>
+                    So that was the last demo and it's time to go to the conclusions. This was not
+                    an all Java talk as you may have hoped for but this is the way applications work
+                    now. Now we have an API that we can use from JavaScript as I've shown you today
+                    but you could just as easy have created a native app. So stop caring about JSF,
+                    GWT or whatever framework is cool on the Java server side today. This is the
+                    future.
+                </p>
+                <p>That being said it's not easy...</p>
+            </div>
+        </div>
+        <div id="conclusion-2" class="step invisible" data-x="5000" data-y="3000">
+            <div class="center">
+                <h1>Conclusions</h1>
+                <div class="box ballon ballon-down ballon1">It takes some hard work</div>
+                <div class="box ballon ballon-up ballon2">Frameworks need to catch up</div>
+            </div>
+
+            <div class="notes">
+                <p>
+                    It takes some really hard work to pull it of and the frameworks and tools really
+                    need to catch up to handle these kind of applications.
+                </p>
+            </div>
+        </div>
+        <div id="conclusion-3" class="step invisible" data-x="5000" data-y="3000">
+            <div class="center">
+                <h1>Conclusions</h1>
+                <div class="box ballon ballon-down ballon3">JavaScript has its limitations</div>
+            </div>
+
+            <div class="notes">
+                <p>
+                    Next problem is that JavaScript itself and the different implementations has its
+                    limitations. Especially the event loop and the single threaded nature of
+                    JavaScript can be really tricky sometimes.
+                </p>
+                <p>However...</p>
+            </div>
+        </div>
+        <div id="conclusion-4" class="step invisible" data-x="5000" data-y="3000">
+            <div class="center">
+                <h1>Conclusions</h1>
+                <div class="box ballon ballon-down ballon4">It works great…</div>
+                <div class="box ballon ballon-up ballon5">…and it make other UIs feel old</div>
+            </div>
+
+            <div class="notes">
+                <p>
+                    This works great and it really makes other UIs feel old and terrible and I
+                    hope that people start to adopt these kind of architectures more because they
+                    rock!
+                </p>
+            </div>
+        </div>
+
+        <!-- Bye ---------------------------------------------------------------------------------->
+
+        <div id="outro-1" class="step" data-x="5000" data-y="4000">
+            <h2>Thank you for coming</h2>
+            <h1>WebSockets</h1>
+            <h3>Joakim Kemeny</h3>
+            <h4>@joakimkemeny</h4>
+            <h4>github.com/joakimkemeny</h4>
+            <img src="img/callista.png" class="logotype">
+            <img src="img/backhammar.png" class="factory">
+            <canvas id="outro-smoke" class="smoke" height="744" width="1000"></canvas>
+
+            <div class="notes">
+                <p>
+                    That's all I got for you today. I hope you enjoyed it and if you want to know
+                    more about this and the project I'm working on you can catch me after the
+                    session. I can show you what the real factory looks like.
+                </p>
+                <p>
+                    Also checkout my Github repository, checkout Callista Enterprise and connect
+                    with me on Twitter. Thank you so much for coming.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/scripts.min.js"></script>
+</body>
+</html>
